@@ -5,33 +5,51 @@ class Type(Enum):
     MELEEWEAPON, RANGEDWEAPON, SPECIAL = range(3)
 
 class Action:
-    def __init__(self, name="Club"):
+    def __init__(self,  user, name="Club"):
         self.name = name
         self.type = Type.MELEEWEAPON
         self.weapon = weapon.Weapon("Club")
         self.special = None
+        self.user = user
 
     def __str__(self):
-        STR = 10
-        DEX = 10
-        prof = 2
+        STR = self.user.abilities.STR
+        DEX = self.user.abilities.DEX
+        prof = self.user.prof
 
         if self.type is Type.MELEEWEAPON:
-            hit = (STR - 10) // 2 + prof
-            reach = 5
-            damage = self.weapon.dice.avg
-            dice = str(self.weapon.dice)
-            dtype = self.weapon.damage
+            stat = STR
+            reach = self.weapon.reach
+            damage = self.weapon.damage
+            dice = self.weapon.dice
 
             if weapon.Property.FINESSE in self.weapon.properties:
-                tohit = (DEX - 10) // 2 + prof
-            else:
-                tohit = (STR - 10) // 2 + prof
+                stat = DEX
+            if weapon.Property.TWOHANDED in self.weapon.properties:
+                dice = self.weapon.alternate
+            if weapon.Property.VERSATILE in self.weapon.properties and len(user.wield) < 2:
+                dice = self.weapon.alternate
 
-            return "{}. Melee Weapon Attack: {:+} to hit, reach {} ft., one target. Hit: {} ({}) {} damage.".format(self.name, hit, reach, damage, dice, dtype)
+            return "{}. Melee Weapon Attack: {:+} to hit, reach {} ft., one target. Hit: {} ({}) {} damage.".format(self.name, (stat - 10) // 2 + prof, reach,
+                dice.avg + (stat - 10) // 2, dice, damage)
+
+        elif self.type is Type.RANGEDWEAPON:
+            stat = DEX
+            reach = 5
+            primary = self.weapon.reach
+            secondary = self.weapon.secondary
+            damage = self.weapon.damage
+            dice = self.weapon.dice
+
+            if weapon.Property.THROWN in self.weapon.properties:
+                stat = STR
+            if weapon.Property.AMMUNITION in self.weapon.properties:
+                pass # todo
+            if weapon.Property.LOADING in self.weapon.properties:
+                pass # todo
+
+            return "{}. Ranged Weapon Attack: {:+} to hit, range {} ft., one target. Hit: {} ({}) {} damage.".format(self.name, (stat - 10) // 2 + prof, reach,
+                dice.avg + (stat - 10) // 2, dice, damage)
 
         else:
-            return "nah"
-
-if __name__ == "__main__":
-    print(Action())
+            return "todo"

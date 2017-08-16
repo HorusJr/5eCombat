@@ -1,6 +1,7 @@
-import random
 from enum import Enum
 from collections import *
+import random
+import action, weapon
 
 class Size(Enum):
     TINY, SMALL, MEDIUM, LARGE, HUGE, GARGANTUAN = range(6)
@@ -42,7 +43,10 @@ class Monster:
         self.armor = ()
         self.weapons = ()
         self.equipment = ()
+        self.wield = (weapon.Weapon())
+
+        self.actions = (action.Action(self), )
 
 if __name__ == "__main__":
     Bob = Monster("Commoner")
-    print(Bob.abilities.STR)
+    print(Bob.actions[0])
