@@ -27,6 +27,7 @@ class Monster:
         self.alignment = random.choice(list(Alignment))
         self.ac = 10
         self.hp = 4
+        self.prof = 2
         self.abilities = Abilities(10,10,10,10,10,10)
         self.speed = {'speed': 30}
         self.skills = {}
@@ -35,9 +36,13 @@ class Monster:
         self.resistances = ()
         self.immunities = ()
         self.senses = {'vision': -1}
-        self.languages = (Language.COMMON)
+        self.languages = (random.choice(list(Language)))
         self.cr = 0
 
         self.armor = ()
         self.weapons = ()
         self.equipment = ()
+
+if __name__ == "__main__":
+    Bob = Monster("Commoner")
+    print(Bob.abilities.STR)
