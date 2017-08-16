@@ -1,6 +1,6 @@
 from enum import Enum
 from collections import *
-import random
+import random, uuid, os, webbrowser
 import action, weapon
 
 class Size(Enum):
@@ -47,6 +47,105 @@ class Monster:
 
         self.actions = (action.Action(self), )
 
+        self.url =  "../../sites/{}.html".format(uuid.uuid4().int)
+
+    def gen_website(self):
+        f = open(self.url, 'w')
+
+        body = '''
+<html>
+<head>
+  <title>Commoner</title>
+  <link rel="stylesheet" href="monster.css" />
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="header">
+      <h2>COMMONER</h2>
+      <p>Medium humanoid (human), true neutral</p>
+    </div>
+
+    <div id="ac">
+      <p><b>Armor Class</b> 10</p>
+      <p><b>Hit Points</b> 4 (1d8)</p>
+      <p><b>Speed</b> 30 ft.</p>
+    </div>
+
+    <div id="abilities">
+      <div class="ability">
+        <div class="top">
+          STR
+        </div>
+        10 (+0)
+      </div>
+      <div class="ability">
+        <div class="top">
+          DEX
+        </div>
+        10 (+0)
+      </div>
+      <div class="ability">
+        <div class="top">
+          CON
+        </div>
+        10 (+0)
+      </div>
+      <div class="ability">
+        <div class="top">
+          INT
+        </div>
+        10 (+0)
+      </div>
+      <div class="ability">
+        <div class="top">
+          WIS
+        </div>
+        10 (+0)
+      </div>
+      <div class="ability">
+        <div class="top">
+          CHA
+        </div>
+        10 (+0)
+      </div>
+    </div>
+
+    <div id="extras">
+      <p><b>Senses</b> passive Perception 10</p>
+      <p><b>Languages</b> Common</p>
+      <p><b>Challenge</b> 0</p>
+    </div>
+
+    <div id="special"></div>
+
+    <div id="actions">
+      <h3>Actions</h3>
+      <p><i><b>Club.</b> Melee Weapon Attack:</i> +2 to hit, reach 5 ft., one
+        target. <i>Hit:</i> 2 (1d4) bludgeoning damage.
+    </div>
+
+    <div id="legendary">
+
+    </div>
+
+  </div>
+<body>
+
+</html>
+
+        '''
+
+        f.write(body)
+        f.close()
+
+    def show_website(self):
+        if not os.path.exists(self.url):
+            self.gen_website()
+
+        webbrowser.open('file://' + os.path.realpath(self.url))
+
+
 if __name__ == "__main__":
     Bob = Monster("Commoner")
-    print(Bob.actions[0])
+    Bob.show_website()

@@ -1,0 +1,50 @@
+body {
+  display: inline-block;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5em;
+  border: 1px solid black;
+  max-width: 30em;
+}
+
+#header {
+  padding-left: 0.5em;
+  border-bottom: 2px solid red;
+}
+
+#ac {
+  padding-left: 0.5em;
+  border-bottom: 2px solid red;
+}
+
+#abilities {
+  display: flex;
+  padding: 0.5em;
+  border-bottom: 2px solid red;
+}
+
+.ability {
+  width: 5em;
+  text-align: center;
+}
+
+#extras {
+  padding-left: 0.5em;
+  border-bottom: 2px solid red;
+}
+
+#special {
+
+}
+
+#actions {
+  padding-left: 0.5em;
+  width: 85%;
+}
+
+p, h2, h3 {
+  margin: 0.5em 0 0.5em 0;
+}
