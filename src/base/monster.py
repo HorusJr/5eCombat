@@ -27,12 +27,24 @@ class Skill(Enum):
     ATHLETICS, ACROBATICS, SLEIGHT_OF_HAND, STEALTH, ARCANA, HISTORY, INVESTIGATION, NATURE, RELIGION, ANIMAL_HANDLING, INSIGHT, MEDICINE, PERCEPTION, SURVIVAL, \
     DECEPTION, INTIMIDATION, PERFORMANCE, PERSUASION = range(18)
 
+class Options(Enum):
+    NAME, SIZE, TYPE, TAGS, ALIGNMENT, AC, HP, PROF, ABILITIES, SPEED, SKILLS, THROWS, VULNERABILITIES, RESISTANCES, IMMUNITIES, SENSES, LANGUAGES, CR, ARMOR, WEAPONS, \
+    EQUIPMENT, WIELD, features, ACTIONS, LEGENDARIES, LDESC = range(26)
+
+'''
+class Features(Enum):
+    AGGRESSIVE, AMBUSHER, AMORPHOUS, ANGELIC_WEAPONS, ANTIMAGIC_SUSCEPTIBILITY, AVOIDANCE, BLIND_SENSES, BLOOD_FRENZY, BREATH_WEAPON, BRUTE, CHAMELEON_SKIN, \
+    CHANGE_SHAPE, CHARGE, CHARM, CONSTRICT, DAMAGE_ABSORPTION, DAMAGE_TRANSFER, DEATH_BURST, DEVIL_SIGHT, DIVE, ECHOLOCATION, ELEMENTAL_BODY, ENLARGE, ETHEREALNESS, \
+    FALSE_APPEARANCE, FEY_ANCESTRY, FIENDISH_BLESSING, FLYBY, FRIGHTFUL_PRESENCE, GRAPPLER, HOLD_BREATH, HORRIFYING_VISAGE, ILLUMINATION, ILLUSORY_APPEARANCE, \
+    IMMUTABLE_FORM, INCORPOREAL_MOVEMENT, INNATE_SPELLCASTING, INSCRUTABLE, INVISIBILITY, KEEN_SENSES, LABYRINTHINE_RECALL, LEADERSHIP, LEGENDARY_RESISTANCE, LIFE_DRAIN \
+'''
+
 Abilities = namedtuple('Ability', ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'])
 alignments = ["lawful good", "neutral good", "chaotic good", "lawful neutral", "true neutral", "chaotic neutral", "lawful evil", "neutral evil", "chaotic evil"]
 
 class Monster:
-    def __init__(self, name="Commoner"):
-        self.name = name
+    def __init__(self, options={}):
+        self.name = "Commoner"
         self.size = Size.MEDIUM
         self.type = Type.HUMANOID
         self.tags = ("human", )
@@ -56,9 +68,22 @@ class Monster:
         self.equipment = ()
         self.wield = (weapon.Weapon(), )
 
+        self.features = ()
         self.actions = (action.Action(self), )
+        self.legendaries = ()
+        self.ldesc = ""
 
         self.url =  "../../sites/{}.html".format(uuid.uuid4().int)
+
+        for k,v in options.items():
+            exec("self.{} = {}".format(k._name_.lower(), v))
+
+    def featurestr(self, tup):
+        stri = ""
+        for a in tup:
+            stri = "{}\n{}".format(stri, a)
+
+        return stri
 
     def sensestr(self):
         if len(self.senses) == 0:
@@ -146,11 +171,15 @@ class Monster:
       <p>{} {} {}, {}</p>
     </div>
 
+    <div class="hline"></div>
+
     <div id="ac">
       <p><b>Armor Class</b> {}</p>
       <p><b>Hit Points</b> {} ({})</p>
       <p><b>Speed</b> {}</p>
     </div>
+
+    <div class="hline"></div>
 
     <div id="abilities">
       <div class="ability">
@@ -191,33 +220,37 @@ class Monster:
       </div>
     </div>
 
+    <div class="hline"></div>
+
     <div id="extras">
       <p><b>Senses</b>{} passive Perception {}</p>
       <p><b>Languages</b> {}</p>
       <p><b>Challenge</b> {}</p>
     </div>
 
-    <div id="special"></div>
+    {}{}{}
+
+    <div class="hline"></div>
 
     <div id="actions">
       <h3>Actions</h3>
-      <p><i><b>Club.</b> Melee Weapon Attack:</i> +2 to hit, reach 5 ft., one
-        target. <i>Hit:</i> 2 (1d4) bludgeoning damage.
+      {}
     </div>
 
-    <div id="legendary">
-
-    </div>
+    {}{}{}
 
   </div>
 <body>
 
 </html>
 
-        '''.format(self.name, self.name.upper(), self.size._name_.title(), self.type._name_.lower(), self.tagstr(), self.alignment._name_.replace("_"," ").lower(),
+        '''.format(self.name, self.name.title(), self.size._name_.title(), self.type._name_.lower(), self.tagstr(), self.alignment._name_.replace("_"," ").lower(),
             self.ac, self.hp.avg, self.hp, self.speedstr(), self.abilities.STR, self.mod(self.abilities.STR), self.abilities.DEX, self.mod(self.abilities.DEX),
             self.abilities.CON, self.mod(self.abilities.CON), self.abilities.INT, self.mod(self.abilities.INT), self.abilities.WIS, self.mod(self.abilities.WIS),
-            self.abilities.CHA, self.mod(self.abilities.CHA), self.sensestr(), 10 + self.skill(Skill.PERCEPTION), self.languagestr(), self.cr);
+            self.abilities.CHA, self.mod(self.abilities.CHA), self.sensestr(), 10 + self.skill(Skill.PERCEPTION), self.languagestr(), self.cr,
+            '<div class="hline"></div><div id="features">' if len(self.features) > 0 else '', self.featurestr(self.features), '</div>' if len(self.features) > 0 else '',
+            self.featurestr(self.actions), '<div class="hline"></div><div id="legendary"><h3>Legendary Actions</h3>' + self.ldesc if len(self.legendaries) > 0 else '',
+            self.featurestr(self.legendaries), '</div>' if len(self.legendaries) > 0 else '');
 
         f.write(body)
         f.close()
@@ -233,6 +266,6 @@ class Monster:
             os.remove(self.url)
 
 if __name__ == "__main__":
-    Bob = Monster("Commoner")
+    Bob = Monster()
     Bob.show_website()
-    time.sleep(3)
+    time.sleep(1)

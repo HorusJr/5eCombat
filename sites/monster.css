@@ -12,18 +12,15 @@ body {
 
 #header {
   padding-left: 0.5em;
-  border-bottom: 2px solid red;
 }
 
 #ac {
   padding-left: 0.5em;
-  border-bottom: 2px solid red;
 }
 
 #abilities {
   display: flex;
   padding: 0.5em;
-  border-bottom: 2px solid red;
 }
 
 .ability {
@@ -33,16 +30,25 @@ body {
 
 #extras {
   padding-left: 0.5em;
-  border-bottom: 2px solid red;
 }
 
-#special {
+#features {
+  padding-left: 0.5em;
+  width: 90%;
+}
 
+#legendary {
+  padding-left: 0.5em;
+  width: 90%;
 }
 
 #actions {
   padding-left: 0.5em;
-  width: 85%;
+  width: 90%;
+}
+
+.hline {
+  border-bottom: 2px solid red;
 }
 
 p, h2, h3 {

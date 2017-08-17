@@ -30,7 +30,7 @@ class Action:
             if weapon.Property.VERSATILE in self.weapon.properties and len(user.wield) < 2:
                 dice = self.weapon.alternate
 
-            return "{}. Melee Weapon Attack: {:+} to hit, reach {} ft., one target. Hit: {} ({}) {} damage.".format(self.name, (stat - 10) // 2 + prof, reach,
+            return "<p><i><b>{}</b>. Melee Weapon Attack:</i> {:+} to hit, reach {} ft., one target. <i>Hit</i>: {} ({}) {} damage.</p>".format(self.name, (stat - 10) // 2 + prof, reach,
                 dice.avg + (stat - 10) // 2, dice, damage)
 
         elif self.type is Type.RANGEDWEAPON:
