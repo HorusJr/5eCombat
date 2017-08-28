@@ -71,7 +71,8 @@ class Monster:
         self.features = ()
         self.actions = (action.Action(self), )
         self.legendaries = ()
-        self.ldesc = ""
+        self.ldesc = r'''Can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of
+        another creature's turn. Regains spent legendary actions at the start of its turn.'''
 
         self.url =  "../../sites/{}.html".format(uuid.uuid4().int)
 
@@ -237,7 +238,7 @@ class Monster:
       {}
     </div>
 
-    {}{}{}
+    {}
 
   </div>
 <body>
@@ -249,8 +250,8 @@ class Monster:
             self.abilities.CON, self.mod(self.abilities.CON), self.abilities.INT, self.mod(self.abilities.INT), self.abilities.WIS, self.mod(self.abilities.WIS),
             self.abilities.CHA, self.mod(self.abilities.CHA), self.sensestr(), 10 + self.skill(Skill.PERCEPTION), self.languagestr(), self.cr,
             '<div class="hline"></div><div id="features">' if len(self.features) > 0 else '', self.featurestr(self.features), '</div>' if len(self.features) > 0 else '',
-            self.featurestr(self.actions), '<div class="hline"></div><div id="legendary"><h3>Legendary Actions</h3>' + self.ldesc if len(self.legendaries) > 0 else '',
-            self.featurestr(self.legendaries), '</div>' if len(self.legendaries) > 0 else '');
+            self.featurestr(self.actions), '<div class="hline"></div><div id="legendary"><h3>Legendary Actions</h3><p>' + self.ldesc + '</p>' +
+            self.featurestr(self.legendaries) + '</div>' if len(self.legendaries) > 0 else '');
 
         f.write(body)
         f.close()
@@ -265,7 +266,10 @@ class Monster:
         if os.path.exists(self.url):
             os.remove(self.url)
 
+    def action(self, number=0):
+        print(self.actions[number])
+
 if __name__ == "__main__":
-    Bob = Monster()
+    Bob = Monster(options={Options.LEGENDARIES: "(action.Action(self), )"})
     Bob.show_website()
     time.sleep(1)
